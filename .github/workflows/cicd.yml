@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: self-hosted
 
     steps:
@@ -22,16 +22,30 @@ jobs:
 
       - name: Build application image
         run: |
-          docker compose build app
+          docker build -t skills-utilization:latest ./Skills_Utilization
 
-      - name: Start services
+      - name: Check image
         run: |
-          docker compose up -d
+          docker images skills-utilization
 
-      - name: Check containers
+      - name: Start application container
         run: |
-          docker compose ps
+          docker rm -f skills-utilization-ci 2>/dev/null || true
+          docker run -d \
+            --name skills-utilization-ci \
+            -p 5000:5000 \
+            skills-utilization:latest
+
+      - name: Check container
+        run: |
+          docker ps --filter name=skills-utilization-ci
 
       - name: Check application
         run: |
+          sleep 5
           curl --fail http://localhost:5000/ || exit 1
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker rm -f skills-utilization-ci 2>/dev/null || true
