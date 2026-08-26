@@ -229,3 +229,4 @@ vault/keys/
 # HashiCorp Vault
 vault/
 docker-compose.yml
+docker-compose.yml
