@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Secrets
+secrets/
+*.key
+*.token
+
+# HashiCorp Vault
+vault/data/
+vault/keys/
+
+# HashiCorp Vault
+vault/
+docker-compose.yml
