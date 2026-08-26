@@ -1,0 +1,37 @@
+name: Skills Utilization CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check Docker
+        run: docker --version
+
+      - name: Build application image
+        run: |
+          docker compose build app
+
+      - name: Start services
+        run: |
+          docker compose up -d
+
+      - name: Check containers
+        run: |
+          docker compose ps
+
+      - name: Check application
+        run: |
+          curl --fail http://localhost:5000/ || exit 1
