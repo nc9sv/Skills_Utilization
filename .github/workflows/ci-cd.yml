@@ -39,6 +39,29 @@ jobs:
             -e DATABASE_URL=postgresql://postgres:123456@localhost:5432/course_recommendation_db \
             skills-utilization:latest
 
+      - name: Scan Docker image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: skills-utilization:latest
+          severity: CRITICAL,HIGH
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: |
+          docker tag skills-utilization:latest \
+            ghcr.io/${{ github.repository_owner }}/skills-utilization:latest
+
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/skills-utilization:latest
+
       - name: Wait for app to start
         run: sleep 10
 
@@ -46,7 +69,7 @@ jobs:
         run: docker ps | grep skills-app
 
       - name: Run tests (adjust to your actual test command)
-        run: docker exec skills-app pytest || echo "No tests configured yet"
+        run: docker exec skills-app pytest
 
       - name: Show logs on failure
         if: failure()
