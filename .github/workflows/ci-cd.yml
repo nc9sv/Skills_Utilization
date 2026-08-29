@@ -77,7 +77,6 @@ jobs:
       - name: Run TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
-          path: ./Skills_Utilization
           extra_args: --only-verified
 
 
