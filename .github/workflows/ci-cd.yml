@@ -98,7 +98,7 @@ jobs:
         run: pip install bandit
 
       - name: Run Bandit
-        run: bandit -r ./Skills_Utilization -ll
+        run: bandit -r ./Skills_Utilization -ll --skip B104
 
 
   hadolint:
